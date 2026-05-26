@@ -120,3 +120,11 @@ function formatarData(data) {
   var partes = data.split("-");
   return partes[2] + "/" + partes[1] + "/" + partes[0];
 }
+
+// Função de navegação usada pelos links do menu
+function irPara(id) {
+  var elemento = document.getElementById(id);
+  if (elemento) {
+    elemento.scrollIntoView({ behavior: "smooth" });
+  }
+}
