@@ -14,17 +14,6 @@ try {
 // Mostra os agendamentos ao carregar a página
 renderizarLista();
 
-// Links do menu — rolagem suave para cada seção
-document.querySelectorAll("nav a").forEach(function(link) {
-  link.addEventListener("click", function(e) {
-    e.preventDefault();
-    var alvo = document.querySelector(this.getAttribute("href"));
-    if (alvo) {
-      alvo.scrollIntoView({ behavior: "smooth" });
-    }
-  });
-});
-
 // Envio do formulário
 document.getElementById("form-agendamento").addEventListener("submit", function(e) {
   e.preventDefault();
@@ -35,7 +24,6 @@ document.getElementById("form-agendamento").addEventListener("submit", function(
   var hora     = document.getElementById("hora").value;
   var telefone = document.getElementById("telefone").value.trim();
 
-  // Validação básica
   if (!nome || !servico || !data || !hora) {
     alert("Preencha todos os campos obrigatórios.");
     return;
@@ -52,24 +40,20 @@ document.getElementById("form-agendamento").addEventListener("submit", function(
 
   agendamentos.push(novoAgendamento);
 
-  // Salva no localStorage
   try {
     localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
   } catch (e) {
     console.log("Erro ao salvar:", e);
   }
 
-  // Mensagem de sucesso
   var msg = document.getElementById("mensagem");
   msg.textContent = "✅ Agendamento confirmado!";
   setTimeout(function() { msg.textContent = ""; }, 3000);
 
-  // Limpa o formulário
   document.getElementById("form-agendamento").reset();
 
-  // Atualiza a lista e rola até ela
   renderizarLista();
-  document.getElementById("lista").scrollIntoView({ behavior: "smooth" });
+  irPara("lista");
 });
 
 // Renderiza a lista de agendamentos
@@ -82,7 +66,6 @@ function renderizarLista() {
     return;
   }
 
-  // Ordena por data e hora
   agendamentos.sort(function(a, b) {
     return (a.data + a.hora).localeCompare(b.data + b.hora);
   });
@@ -115,16 +98,16 @@ function cancelar(id) {
   }
 }
 
-// Formata data de AAAA-MM-DD para DD/MM/AAAA
-function formatarData(data) {
-  var partes = data.split("-");
-  return partes[2] + "/" + partes[1] + "/" + partes[0];
-}
-
-// Função de navegação usada pelos links do menu
+// Navega suavemente até uma seção pelo id
 function irPara(id) {
   var elemento = document.getElementById(id);
   if (elemento) {
     elemento.scrollIntoView({ behavior: "smooth" });
   }
+}
+
+// Formata data de AAAA-MM-DD para DD/MM/AAAA
+function formatarData(data) {
+  var partes = data.split("-");
+  return partes[2] + "/" + partes[1] + "/" + partes[0];
 }
