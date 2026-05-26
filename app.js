@@ -1,64 +1,65 @@
-// Lista de agendamentos (salva no localStorage)
+// Carrega agendamentos do localStorage
 var agendamentos = [];
-
-// Tenta carregar do localStorage
 try {
   var salvo = localStorage.getItem("agendamentos");
-  if (salvo) {
-    agendamentos = JSON.parse(salvo);
-  }
-} catch (e) {
-  agendamentos = [];
+  if (salvo) agendamentos = JSON.parse(salvo);
+} catch(e) { agendamentos = []; }
+
+// ── PÁGINA DE AGENDAMENTO (index.html) ──
+var form = document.getElementById("form-agendamento");
+if (form) {
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    var nome     = document.getElementById("nome").value.trim();
+    var servico  = document.getElementById("servico").value;
+    var data     = document.getElementById("data").value;
+    var hora     = document.getElementById("hora").value;
+    var telefone = document.getElementById("telefone").value.trim();
+
+    if (!nome || !servico || !data || !hora) {
+      alert("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    // Verifica horário duplicado
+    var duplicado = agendamentos.some(function(ag) {
+      return ag.data === data && ag.hora === hora;
+    });
+
+    if (duplicado) {
+      alert("❌ Este horário já está ocupado! Escolha outro horário ou data.");
+      return;
+    }
+
+    agendamentos.push({
+      id: Date.now(),
+      nome: nome,
+      servico: servico,
+      data: data,
+      hora: hora,
+      telefone: telefone
+    });
+
+    try {
+      localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+    } catch(e) {}
+
+    var msg = document.getElementById("mensagem");
+    msg.textContent = "✅ Agendamento confirmado!";
+    setTimeout(function() { msg.textContent = ""; }, 3000);
+
+    form.reset();
+  });
 }
 
-// Mostra os agendamentos ao carregar a página
-renderizarLista();
-
-// Envio do formulário
-document.getElementById("form-agendamento").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  var nome     = document.getElementById("nome").value.trim();
-  var servico  = document.getElementById("servico").value;
-  var data     = document.getElementById("data").value;
-  var hora     = document.getElementById("hora").value;
-  var telefone = document.getElementById("telefone").value.trim();
-
-  if (!nome || !servico || !data || !hora) {
-    alert("Preencha todos os campos obrigatórios.");
-    return;
-  }
-
-  var novoAgendamento = {
-    id: Date.now(),
-    nome: nome,
-    servico: servico,
-    data: data,
-    hora: hora,
-    telefone: telefone
-  };
-
-  agendamentos.push(novoAgendamento);
-
-  try {
-    localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-  } catch (e) {
-    console.log("Erro ao salvar:", e);
-  }
-
-  var msg = document.getElementById("mensagem");
-  msg.textContent = "✅ Agendamento confirmado!";
-  setTimeout(function() { msg.textContent = ""; }, 3000);
-
-  document.getElementById("form-agendamento").reset();
-
+// ── PÁGINA DE LISTA (lista.html) ──
+var container = document.getElementById("lista-agendamentos");
+if (container) {
   renderizarLista();
-  irPara("lista");
-});
+}
 
-// Renderiza a lista de agendamentos
 function renderizarLista() {
-  var container = document.getElementById("lista-agendamentos");
   container.innerHTML = "";
 
   if (agendamentos.length === 0) {
@@ -79,35 +80,20 @@ function renderizarLista() {
         '<span>' + ag.servico + ' — ' + formatarData(ag.data) + ' às ' + ag.hora + '</span>' +
         (ag.telefone ? '<br><span>' + ag.telefone + '</span>' : '') +
       '</div>' +
-      '<button onclick="cancelar(' + ag.id + ')">Cancelar</button>';
-
+      '<button onclick="cancelar(' + ag.id + ')">Excluir</button>';
     container.appendChild(div);
   });
 }
 
-// Cancela um agendamento
 function cancelar(id) {
-  if (confirm("Deseja cancelar este agendamento?")) {
-    agendamentos = agendamentos.filter(function(ag) {
-      return ag.id !== id;
-    });
-    try {
-      localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
-    } catch (e) {}
+  if (confirm("Deseja excluir este agendamento?")) {
+    agendamentos = agendamentos.filter(function(ag) { return ag.id !== id; });
+    try { localStorage.setItem("agendamentos", JSON.stringify(agendamentos)); } catch(e) {}
     renderizarLista();
   }
 }
 
-// Navega suavemente até uma seção pelo id
-function irPara(id) {
-  var elemento = document.getElementById(id);
-  if (elemento) {
-    elemento.scrollIntoView({ behavior: "smooth" });
-  }
-}
-
-// Formata data de AAAA-MM-DD para DD/MM/AAAA
 function formatarData(data) {
-  var partes = data.split("-");
-  return partes[2] + "/" + partes[1] + "/" + partes[0];
+  var p = data.split("-");
+  return p[2] + "/" + p[1] + "/" + p[0];
 }
