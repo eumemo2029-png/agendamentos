@@ -1,21 +1,46 @@
-// Carrega agendamentos salvos no localStorage
-var agendamentos = JSON.parse(localStorage.getItem("agendamentos")) || [];
+// Lista de agendamentos (salva no localStorage)
+var agendamentos = [];
 
-// Ao carregar a página, mostra os agendamentos existentes
+// Tenta carregar do localStorage
+try {
+  var salvo = localStorage.getItem("agendamentos");
+  if (salvo) {
+    agendamentos = JSON.parse(salvo);
+  }
+} catch (e) {
+  agendamentos = [];
+}
+
+// Mostra os agendamentos ao carregar a página
 renderizarLista();
 
-// Quando o formulário for enviado
+// Links do menu — rolagem suave para cada seção
+document.querySelectorAll("nav a").forEach(function(link) {
+  link.addEventListener("click", function(e) {
+    e.preventDefault();
+    var alvo = document.querySelector(this.getAttribute("href"));
+    if (alvo) {
+      alvo.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+});
+
+// Envio do formulário
 document.getElementById("form-agendamento").addEventListener("submit", function(e) {
   e.preventDefault();
 
-  // Pega os valores do formulário
-  var nome     = document.getElementById("nome").value;
+  var nome     = document.getElementById("nome").value.trim();
   var servico  = document.getElementById("servico").value;
   var data     = document.getElementById("data").value;
   var hora     = document.getElementById("hora").value;
-  var telefone = document.getElementById("telefone").value;
+  var telefone = document.getElementById("telefone").value.trim();
 
-  // Cria um objeto com os dados
+  // Validação básica
+  if (!nome || !servico || !data || !hora) {
+    alert("Preencha todos os campos obrigatórios.");
+    return;
+  }
+
   var novoAgendamento = {
     id: Date.now(),
     nome: nome,
@@ -25,13 +50,16 @@ document.getElementById("form-agendamento").addEventListener("submit", function(
     telefone: telefone
   };
 
-  // Adiciona na lista
   agendamentos.push(novoAgendamento);
 
-  // Salva no localStorage (os dados ficam mesmo após fechar o navegador)
-  localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+  // Salva no localStorage
+  try {
+    localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+  } catch (e) {
+    console.log("Erro ao salvar:", e);
+  }
 
-  // Mostra mensagem de sucesso
+  // Mensagem de sucesso
   var msg = document.getElementById("mensagem");
   msg.textContent = "✅ Agendamento confirmado!";
   setTimeout(function() { msg.textContent = ""; }, 3000);
@@ -39,11 +67,12 @@ document.getElementById("form-agendamento").addEventListener("submit", function(
   // Limpa o formulário
   document.getElementById("form-agendamento").reset();
 
-  // Atualiza a lista na tela
+  // Atualiza a lista e rola até ela
   renderizarLista();
+  document.getElementById("lista").scrollIntoView({ behavior: "smooth" });
 });
 
-// Função que mostra os agendamentos na tela
+// Renderiza a lista de agendamentos
 function renderizarLista() {
   var container = document.getElementById("lista-agendamentos");
   container.innerHTML = "";
@@ -58,17 +87,14 @@ function renderizarLista() {
     return (a.data + a.hora).localeCompare(b.data + b.hora);
   });
 
-  // Cria um card para cada agendamento
   agendamentos.forEach(function(ag) {
-    var dataFormatada = formatarData(ag.data);
-
     var div = document.createElement("div");
     div.className = "item-agendamento";
     div.innerHTML =
       '<div class="info">' +
         '<strong>' + ag.nome + '</strong>' +
-        '<span>' + ag.servico + ' — ' + dataFormatada + ' às ' + ag.hora + '</span>' +
-        (ag.telefone ? '<span> — ' + ag.telefone + '</span>' : '') +
+        '<span>' + ag.servico + ' — ' + formatarData(ag.data) + ' às ' + ag.hora + '</span>' +
+        (ag.telefone ? '<br><span>' + ag.telefone + '</span>' : '') +
       '</div>' +
       '<button onclick="cancelar(' + ag.id + ')">Cancelar</button>';
 
@@ -76,18 +102,20 @@ function renderizarLista() {
   });
 }
 
-// Função para cancelar (remover) um agendamento
+// Cancela um agendamento
 function cancelar(id) {
   if (confirm("Deseja cancelar este agendamento?")) {
     agendamentos = agendamentos.filter(function(ag) {
       return ag.id !== id;
     });
-    localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+    try {
+      localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+    } catch (e) {}
     renderizarLista();
   }
 }
 
-// Formata a data de AAAA-MM-DD para DD/MM/AAAA
+// Formata data de AAAA-MM-DD para DD/MM/AAAA
 function formatarData(data) {
   var partes = data.split("-");
   return partes[2] + "/" + partes[1] + "/" + partes[0];
