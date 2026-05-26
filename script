@@ -1,0 +1,94 @@
+// Carrega agendamentos salvos no localStorage
+var agendamentos = JSON.parse(localStorage.getItem("agendamentos")) || [];
+
+// Ao carregar a página, mostra os agendamentos existentes
+renderizarLista();
+
+// Quando o formulário for enviado
+document.getElementById("form-agendamento").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  // Pega os valores do formulário
+  var nome     = document.getElementById("nome").value;
+  var servico  = document.getElementById("servico").value;
+  var data     = document.getElementById("data").value;
+  var hora     = document.getElementById("hora").value;
+  var telefone = document.getElementById("telefone").value;
+
+  // Cria um objeto com os dados
+  var novoAgendamento = {
+    id: Date.now(),
+    nome: nome,
+    servico: servico,
+    data: data,
+    hora: hora,
+    telefone: telefone
+  };
+
+  // Adiciona na lista
+  agendamentos.push(novoAgendamento);
+
+  // Salva no localStorage (os dados ficam mesmo após fechar o navegador)
+  localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+
+  // Mostra mensagem de sucesso
+  var msg = document.getElementById("mensagem");
+  msg.textContent = "✅ Agendamento confirmado!";
+  setTimeout(function() { msg.textContent = ""; }, 3000);
+
+  // Limpa o formulário
+  document.getElementById("form-agendamento").reset();
+
+  // Atualiza a lista na tela
+  renderizarLista();
+});
+
+// Função que mostra os agendamentos na tela
+function renderizarLista() {
+  var container = document.getElementById("lista-agendamentos");
+  container.innerHTML = "";
+
+  if (agendamentos.length === 0) {
+    container.innerHTML = '<p class="vazio">Nenhum agendamento ainda.</p>';
+    return;
+  }
+
+  // Ordena por data e hora
+  agendamentos.sort(function(a, b) {
+    return (a.data + a.hora).localeCompare(b.data + b.hora);
+  });
+
+  // Cria um card para cada agendamento
+  agendamentos.forEach(function(ag) {
+    var dataFormatada = formatarData(ag.data);
+
+    var div = document.createElement("div");
+    div.className = "item-agendamento";
+    div.innerHTML =
+      '<div class="info">' +
+        '<strong>' + ag.nome + '</strong>' +
+        '<span>' + ag.servico + ' — ' + dataFormatada + ' às ' + ag.hora + '</span>' +
+        (ag.telefone ? '<span> — ' + ag.telefone + '</span>' : '') +
+      '</div>' +
+      '<button onclick="cancelar(' + ag.id + ')">Cancelar</button>';
+
+    container.appendChild(div);
+  });
+}
+
+// Função para cancelar (remover) um agendamento
+function cancelar(id) {
+  if (confirm("Deseja cancelar este agendamento?")) {
+    agendamentos = agendamentos.filter(function(ag) {
+      return ag.id !== id;
+    });
+    localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+    renderizarLista();
+  }
+}
+
+// Formata a data de AAAA-MM-DD para DD/MM/AAAA
+function formatarData(data) {
+  var partes = data.split("-");
+  return partes[2] + "/" + partes[1] + "/" + partes[0];
+}

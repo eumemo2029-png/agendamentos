@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agendamentos</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- TOPO -->
+  <header>
+    <h1>📅 Agendamentos</h1>
+    <p>Marque seu horário de forma rápida e fácil</p>
+  </header>
+
+  <!-- MENU -->
+  <nav>
+    <a href="#agendar">Novo Agendamento</a>
+    <a href="#lista">Meus Agendamentos</a>
+  </nav>
+
+  <main>
+
+    <!-- FORMULÁRIO -->
+    <section id="agendar">
+      <h2>Novo Agendamento</h2>
+
+      <form id="form-agendamento">
+
+        <label for="nome">Nome completo</label>
+        <input type="text" id="nome" placeholder="Ex: João Silva" required/>
+
+        <label for="servico">Serviço</label>
+        <select id="servico" required>
+          <option value="">Selecione...</option>
+          <option value="Corte de Cabelo">Corte de Cabelo</option>
+          <option value="Barba">Barba</option>
+          <option value="Corte + Barba">Corte + Barba</option>
+          <option value="Hidratação">Hidratação</option>
+        </select>
+
+        <label for="data">Data</label>
+        <input type="date" id="data" required/>
+
+        <label for="hora">Horário</label>
+        <select id="hora" required>
+          <option value="">Selecione...</option>
+          <option>08:00</option>
+          <option>09:00</option>
+          <option>10:00</option>
+          <option>11:00</option>
+          <option>13:00</option>
+          <option>14:00</option>
+          <option>15:00</option>
+          <option>16:00</option>
+          <option>17:00</option>
+        </select>
+
+        <label for="telefone">Telefone</label>
+        <input type="tel" id="telefone" placeholder="Ex: (49) 99999-9999"/>
+
+        <button type="submit">Confirmar Agendamento</button>
+
+      </form>
+
+      <div id="mensagem"></div>
+    </section>
+
+    <!-- LISTA -->
+    <section id="lista">
+      <h2>Agendamentos Marcados</h2>
+      <div id="lista-agendamentos">
+        <p class="vazio">Nenhum agendamento ainda.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 Agendamentos — Todos os direitos reservados
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

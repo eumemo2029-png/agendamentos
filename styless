@@ -1,0 +1,180 @@
+/* GERAL */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #333;
+}
+
+/* TOPO */
+header {
+  background: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 24px 20px;
+}
+
+header h1 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+header p {
+  font-size: 14px;
+  color: #aaa;
+}
+
+/* MENU */
+nav {
+  background: #34495e;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 12px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* CONTEÚDO PRINCIPAL */
+main {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* SEÇÕES */
+section {
+  background: white;
+  border-radius: 6px;
+  padding: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+section h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  border-bottom: 2px solid #e74c3c;
+  padding-bottom: 8px;
+}
+
+/* FORMULÁRIO */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+}
+
+input, select {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 15px;
+  width: 100%;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #2c3e50;
+}
+
+button[type="submit"] {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+button[type="submit"]:hover {
+  background: #c0392b;
+}
+
+/* MENSAGEM DE SUCESSO */
+#mensagem {
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #27ae60;
+  text-align: center;
+}
+
+/* LISTA DE AGENDAMENTOS */
+.vazio {
+  color: #999;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.item-agendamento {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.item-agendamento .info strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: #2c3e50;
+}
+
+.item-agendamento .info span {
+  color: #666;
+}
+
+.item-agendamento button {
+  background: none;
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.item-agendamento button:hover {
+  background: #e74c3c;
+  color: white;
+}
+
+/* RODAPÉ */
+footer {
+  background: #2c3e50;
+  color: #aaa;
+  text-align: center;
+  padding: 16px;
+  font-size: 13px;
+  margin-top: 20px;
+}
